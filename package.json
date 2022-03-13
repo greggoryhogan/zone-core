@@ -1,0 +1,15 @@
+{
+  "name": "leashless",
+  "version": "1.0.0",
+  "description": "All the fancy stuff required to run theoffleashdog.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass --watch assets/scss -o assets/css --output-style compressed"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-sass": "^7.0.1"
+  }
+}
