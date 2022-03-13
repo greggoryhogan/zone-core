@@ -1,3 +1,3 @@
 # Leashless
 
-All the fancy stuff required to run [theoffleashdog.com](https://theoffleashdog.com)
+All the fancy stuff required to run [theleashlessdog.com/](https://theleashlessdog.com/)
