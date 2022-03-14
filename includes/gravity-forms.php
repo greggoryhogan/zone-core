@@ -4,6 +4,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Change placeholders for chained dropdowns from gform defaults
+ */
+add_filter( 'gform_form_post_get_meta_1', 'change_gform_park_register_placeholder_defaults', 10, 1);
+function change_gform_park_register_placeholder_defaults( $form ) {
+    $field_id = 2; // Change to your Chained Selects field ID number.
+    $field = GFAPI::get_field( $form, $field_id );
+    $field->inputs = array(
+        // change the 18 here to your field ID as well, or use a variable in both places for the field ID
+        array( 'id' => '2.1', 'label' => 'Select your State' ),
+        array( 'id' => '2.2', 'label' => 'Select your County' ),
+    );
+    return $form;
+}
+
+/**
  * Populate State Dropdown for GF
  */
 add_filter( 'gform_chained_selects_input_choices_1_2_1', 'populate_leashless_states', 10, 7 );
@@ -18,11 +33,6 @@ function populate_leashless_states( $input_choices, $form_id, $field, $input_id,
 		return $input_choices;
 	} else {
 		$choices = array();
-		$choices[] = array(
-			'text'       => 'Select your State',
-			'value'      => "",
-			'isSelected' => true
-		);
 		foreach($terms as $term) {
 			$choices[] = array(
 				'text'       => $term->name,
@@ -53,11 +63,6 @@ function populate_leashless_counties( $input_choices, $form_id, $field, $input_i
 		return $input_choices;
 	} else {
 		$choices = array();
-		$choices[] = array(
-			'text'       => 'Select your County',
-			'value'      => "",
-			'isSelected' => true
-		);
 		foreach($terms as $term) {
 			$choices[] = array(
 				'text'       => $term->name,
