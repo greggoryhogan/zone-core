@@ -32,3 +32,4 @@ add_action( 'wp_enqueue_scripts', 'load_leashless_scritps' );
 
 //Juicy Stuff
 require_once( LSHLSS_PLUGIN_PATH . '/includes/core.php' );
+require_once( LSHLSS_PLUGIN_PATH . '/includes/gravity-forms.php' );

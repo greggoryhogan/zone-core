@@ -70,4 +70,56 @@ function register_leashless_cpt_and_tax() {
 	register_taxonomy( 'locations', array( 'parks' ), $args );
 }
 add_action( 'init', 'register_leashless_cpt_and_tax' );
+
+/**
+ * Helper function to import locations from csv
+ */
+function create_default_park_locations() {
+    if(is_admin() && isset($_GET['insertlocations'])) {
+
+        //Bulk Delete for testing
+        /*$taxonomy_name = 'locations';
+        $terms = get_terms( array(
+            'taxonomy' => $taxonomy_name,
+            'hide_empty' => false
+        ) );
+        foreach ( $terms as $term ) {
+            wp_delete_term($term->term_id, $taxonomy_name); 
+        } */       
+        
+        //Iterate csv and insert locations
+        $row = 0;
+        if (($handle = fopen(LSHLSS_PLUGIN_PATH.'assets/csv/statesandcounties.csv', 'r')) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                $num = count($data);
+                $row++;
+                if($row > 1) {
+                    $county = $data[0];
+                    $state = $data[5];
+                    $state_abbreviation = $data[4];
+                    //echo $county .', '.$state.'<br>';
+                    $term = term_exists($state,'locations');
+                    if($term == null) {
+                        $term = wp_insert_term($state,'locations');
+                        $term_id = $term['term_id'];
+                        add_term_meta($term_id,'abbreviation',$state_abbreviation);
+                        //echo $state .' does not exist but was inserted with ID '.$term_id.'<br>';
+                    } else {
+                        $term_id = $term['term_id'];
+                    }
+                    $sub_term_id = term_exists($county,'locations',$term_id);
+                    if($sub_term_id == null) {
+                        $sub_term = wp_insert_term($county,'locations',array('parent' => $term_id));
+                        $sub_term_id = $sub_term['term_id'];
+                        //echo $county .' does not exist but was inserted with ID '.$sub_term_id.'<br>';
+                    }
+                }
+                
+            }
+            fclose($handle);
+        }
+    }
+}
+add_action('init','create_default_park_locations');
+
 ?>

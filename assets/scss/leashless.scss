@@ -1,6 +1,13 @@
-.leashless {
-    color: #000;
-    &.black {
-        color: #fff;
+/* Gravity Forms Overrides */
+.gform_wrapper {
+    #gform_1 {
+        .gfield_chainedselect {
+            select {
+                width: 100%;
+                .gf_placeholder {
+                    display: none;
+                }
+            }
+        }
     }
 }
