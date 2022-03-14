@@ -31,13 +31,13 @@ function register_leashless_cpt_and_tax() {
 		'exclude_from_search' => false,
 		'capability_type' => 'post',
 		'map_meta_cap' => true,
-		'rewrite' => array( 'slug' => 'parks', 'with_front' => false ),
+		'rewrite' => array( 'slug' => 'park', 'with_front' => false ),
 		'query_var' => true,
 		'supports' => array( 'title', 'editor', 'custom-fields', 'revisions', 'thumbnail', 'author' ),
-		'taxonomies' => array( 'locations' ),
+		'taxonomies' => array( 'location' ),
 	);
 
-	register_post_type( 'parks', $args );
+	register_post_type( 'park', $args );
 
 	/**
 	 * Taxonomy: Locations
@@ -67,7 +67,7 @@ function register_leashless_cpt_and_tax() {
 		'show_in_quick_edit' => true,
         'hierarchical'    => true,
 	);
-	register_taxonomy( 'locations', array( 'parks' ), $args );
+	register_taxonomy( 'locations', array( 'park' ), $args );
 }
 add_action( 'init', 'register_leashless_cpt_and_tax' );
 
@@ -122,4 +122,22 @@ function create_default_park_locations() {
 }
 add_action('init','create_default_park_locations');
 
+/**
+ * Helper to show breadcrumb for state and county for current park
+ */
+function get_park_location() {
+    global $post;
+    $taxonomy = 'locations';
+    $terms = wp_get_post_terms($post->ID, $taxonomy);
+    if( is_wp_error( $terms ) ) {
+        return;
+    } else {
+        $string = '';
+        foreach($terms as $term) {
+            $string .= '<a href="'.get_term_link($term,$taxonomy).'">'.$term->name.'</a> > ';
+        }
+        $string = substr($string, 0, -2);
+        return $string;
+    } 
+}
 ?>

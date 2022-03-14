@@ -68,4 +68,29 @@ function populate_leashless_counties( $input_choices, $form_id, $field, $input_i
 		return $choices;
 	}
 }
+
+/**
+ * Create Park in draft when submitted via gform
+ */
+// submit to sfmc after catalog request
+add_action( 'gform_after_submission_1', 'create_leashless_park', 10, 2 );
+function create_leashless_park( $entry, $form ) {
+	$name = $entry['1'];
+	$state = $entry['2.1'];
+	$county = $entry['2.2'];
+	
+	//create draft post
+	$args = array(
+		'post_title' => $name,
+		'post_content' => '',
+		'post_type' => 'park'
+	);
+	$post_id = wp_insert_post($args);
+	if( !is_wp_error( $post_id ) ) {
+		wp_set_post_terms($post_id,array($state,$county),'locations');
+	}
+	
+	//delete the entry since we don't need it anymore
+	GFAPI::delete_entry( $entry['id'] );
+}
 ?>
