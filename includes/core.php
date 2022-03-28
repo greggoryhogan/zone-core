@@ -140,4 +140,15 @@ function get_park_location() {
         return $string;
     } 
 }
+
+/**
+ * Search form for locations
+ */
+add_shortcode( 'park_search', 'park_search_func' );
+function park_search_func() {
+    $form = '<form action="" id="findapark" class="ui-widget">
+        <input type="text" id="parklocation" name="parklocation" autocomplete="false" placeholder="Enter your state or county" />
+    </form>';
+    return $form;
+}
 ?>

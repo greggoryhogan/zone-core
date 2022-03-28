@@ -8,3 +8,22 @@
         }
     }
 }
+/* jQuery UI */
+.ui-autocomplete {
+    max-height: 250px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+}
+
+/* Shortcodes */
+#findapark {
+    margin: 0 auto 2rem auto;
+    input[type="text"] {
+        width: 100%;
+        padding: 1rem;
+        font-size: 2rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+}
