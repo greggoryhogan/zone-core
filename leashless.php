@@ -56,6 +56,7 @@ function load_leashless_plugin_scripts() {
         array( 
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
             'available_locations' => json_encode($autocomplete),
+            'siteurl' => get_bloginfo('url'),
         )
     );
 }

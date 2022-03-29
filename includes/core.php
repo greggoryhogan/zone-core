@@ -145,9 +145,14 @@ function get_park_location() {
  * Search form for locations
  */
 add_shortcode( 'park_search', 'park_search_func' );
-function park_search_func() {
+function park_search_func($atts) {
+    $atts = shortcode_atts(
+        array(
+            'text-align' => 'left',
+            
+        ), $atts );
     $form = '<form action="" id="findapark" class="ui-widget">
-        <input type="text" id="parklocation" name="parklocation" autocomplete="false" placeholder="Enter your state or county" />
+        <input type="text" id="parklocation" style="text-align:'.$atts['text-align'].'" name="parklocation" autocomplete="false" placeholder="Enter your state or county" />
     </form>';
     return $form;
 }
