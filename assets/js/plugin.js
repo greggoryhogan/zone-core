@@ -27,6 +27,8 @@
         //init custom jquery autocomplete
         $('#parklocation').catcomplete({
             source: $.parseJSON(site_js.available_locations),
+            scroll: true,
+            minLength: 0,
             search: function( event, ui ) {
                 //console.log(ui);
             },
@@ -39,6 +41,6 @@
                 let url = site_js.siteurl + '/location/' + ui.item.value;
                 window.location.href = url;
             }
-        });
+        }); /*.focus(function() {$(this).catcomplete("search", "");})*/ //adds results on click of input
     });
 })(jQuery); // Fully reference jQuery after this point.
