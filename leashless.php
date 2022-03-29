@@ -35,12 +35,13 @@ function load_leashless_plugin_scripts() {
     $autocomplete = array();
     $locations = get_terms( 'locations', array(
         'hide_empty' => false,
+        'parent' => 0
     ));
     foreach($locations as $location) {
         $parent = $location->parent;
         if($parent == 0) {
             $category = 'State';
-            $name = $location->name .' (State)';
+            $name = $location->name;
         } else {
             $term = get_term_by('id',$parent,'locations');
             $category = $term->name;
@@ -49,7 +50,24 @@ function load_leashless_plugin_scripts() {
         $autocomplete[] = array(
             'label' => $name,
             'value' => $location->slug,
-            'category' => $category
+            'category' => 'States'
+        );
+    }
+
+    $locations = get_terms( 'locations', array(
+        'hide_empty' => false,
+    ));
+    foreach($locations as $location) {
+        $parent = $location->parent;
+        if($parent != 0) {
+            $term = get_term_by('id',$parent,'locations');
+            $category = $term->name;
+            $name = $location->name.', '.$category;
+        }
+        $autocomplete[] = array(
+            'label' => $name,
+            'value' => $location->slug,
+            'category' => 'Counties'
         );
     }
     wp_localize_script( 'plugin-js', 'site_js',
