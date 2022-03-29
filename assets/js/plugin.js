@@ -41,6 +41,6 @@
                 let url = site_js.siteurl + '/location/' + ui.item.value;
                 window.location.href = url;
             }
-        }); /*.focus(function() {$(this).catcomplete("search", "");})*/ //adds results on click of input
+        });
     });
 })(jQuery); // Fully reference jQuery after this point.
