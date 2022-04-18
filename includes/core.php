@@ -4,21 +4,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Register parks and locations
+ * Register Custom Post Types and Taxonomies
  */
-function register_leashless_cpt_and_tax() {
+function register_zone_cpts_and_taxonomies() {
 
 	/**
-	 * Post Type: Letters.
+	 * Post Type: Work
 	 */
 
 	$labels = array(
-		'name' => __( 'Parks', 'lshlss' ),
-		'singular_name' => __( 'Park', 'lshlss' ),
+		'name' => __( 'Works', 'zone' ),
+		'singular_name' => __( 'Work', 'zone' ),
 	);
 
 	$args = array(
-		'label' => __( 'Parks', 'lshlss' ),
+		'label' => __( 'Works', 'zone' ),
 		'labels' => $labels,
 		'description' => '',
 		'public' => true,
@@ -31,129 +31,74 @@ function register_leashless_cpt_and_tax() {
 		'exclude_from_search' => false,
 		'capability_type' => 'post',
 		'map_meta_cap' => true,
-		'rewrite' => array( 'slug' => 'park', 'with_front' => false ),
+		'rewrite' => array( 'slug' => 'work', 'with_front' => false ),
 		'query_var' => true,
 		'supports' => array( 'title', 'editor', 'custom-fields', 'revisions', 'thumbnail', 'author' ),
-		'taxonomies' => array( 'location' ),
+		'taxonomies' => array( 'industries','services' ),
 	);
 
-	register_post_type( 'park', $args );
+	register_post_type( 'work', $args );
 
 	/**
-	 * Taxonomy: Locations
+	 * Taxonomy: Industries
 	 */
 
 	$labels = array(
-		'name' => __( 'Locations', 'lshlss' ),
-		'singular_name' => __( 'Location', 'lshlss' ),
-        'add_new_item' => __( 'Add New Location', 'lshlss' ),
-        'parent_item' => __( 'Parent Location', 'lshlss' ),
-        'not_found' => __( 'No locations found', 'lshlss' ),
+		'name' => __( 'Industries', 'zone' ),
+		'singular_name' => __( 'Industry', 'zone' ),
+        'add_new_item' => __( 'Add New Industry', 'zone' ),
+        'parent_item' => __( 'Parent Industry', 'zone' ),
+        'not_found' => __( 'No Industries found', 'zone' ),
 	);
 
 	$args = array(
-		'label' => __( 'Locations', 'lshlss' ),
+		'label' => __( 'Industries', 'zone' ),
 		'labels' => $labels,
 		'public' => true,
-		'label' => 'Locations',
+		'label' => 'Industries',
 		'show_ui' => true,
 		'show_in_menu' => true,
 		'show_in_nav_menus' => true,
 		'query_var' => true,
-		'rewrite' => array( 'slug' => 'location', 'with_front' => false, ),
+		'rewrite' => array( 'slug' => 'industry', 'with_front' => false, ),
 		'show_admin_column' => 0,
 		'show_in_rest' => false,
 		'rest_base' => '',
 		'show_in_quick_edit' => true,
         'hierarchical'    => true,
 	);
-	register_taxonomy( 'locations', array( 'park' ), $args );
-}
-add_action( 'init', 'register_leashless_cpt_and_tax' );
+	register_taxonomy( 'industries', array( 'work' ), $args );
 
-/**
- * Helper function to import locations from csv
- */
-function create_default_park_locations() {
-    if(is_admin() && isset($_GET['insertlocations'])) {
+    /**
+	 * Taxonomy: Services
+	 */
 
-        //Bulk Delete for testing
-        /*$taxonomy_name = 'locations';
-        $terms = get_terms( array(
-            'taxonomy' => $taxonomy_name,
-            'hide_empty' => false
-        ) );
-        foreach ( $terms as $term ) {
-            wp_delete_term($term->term_id, $taxonomy_name); 
-        } */       
-        
-        //Iterate csv and insert locations
-        $row = 0;
-        if (($handle = fopen(LSHLSS_PLUGIN_PATH.'assets/csv/statesandcounties.csv', 'r')) !== FALSE) {
-            while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                $num = count($data);
-                $row++;
-                if($row > 1) {
-                    $county = $data[0];
-                    $state = $data[5];
-                    $state_abbreviation = $data[4];
-                    //echo $county .', '.$state.'<br>';
-                    $term = term_exists($state,'locations');
-                    if($term == null) {
-                        $term = wp_insert_term($state,'locations');
-                        $term_id = $term['term_id'];
-                        add_term_meta($term_id,'abbreviation',$state_abbreviation);
-                        //echo $state .' does not exist but was inserted with ID '.$term_id.'<br>';
-                    } else {
-                        $term_id = $term['term_id'];
-                    }
-                    $sub_term_id = term_exists($county,'locations',$term_id);
-                    if($sub_term_id == null) {
-                        $sub_term = wp_insert_term($county,'locations',array('parent' => $term_id));
-                        $sub_term_id = $sub_term['term_id'];
-                        //echo $county .' does not exist but was inserted with ID '.$sub_term_id.'<br>';
-                    }
-                }
-                
-            }
-            fclose($handle);
-        }
-    }
-}
-add_action('init','create_default_park_locations');
+	$labels = array(
+		'name' => __( 'Services', 'zone' ),
+		'singular_name' => __( 'Service', 'zone' ),
+        'add_new_item' => __( 'Add New Service', 'zone' ),
+        'parent_item' => __( 'Parent Service', 'zone' ),
+        'not_found' => __( 'No Services found', 'zone' ),
+	);
 
-/**
- * Helper to show breadcrumb for state and county for current park
- */
-function get_park_location() {
-    global $post;
-    $taxonomy = 'locations';
-    $terms = wp_get_post_terms($post->ID, $taxonomy);
-    if( is_wp_error( $terms ) ) {
-        return;
-    } else {
-        $string = '';
-        foreach($terms as $term) {
-            $string .= '<a href="'.get_term_link($term,$taxonomy).'">'.$term->name.'</a> > ';
-        }
-        $string = substr($string, 0, -2);
-        return $string;
-    } 
-}
+	$args = array(
+		'label' => __( 'Services', 'zone' ),
+		'labels' => $labels,
+		'public' => true,
+		'label' => 'Services',
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'show_in_nav_menus' => true,
+		'query_var' => true,
+		'rewrite' => array( 'slug' => 'service', 'with_front' => false, ),
+		'show_admin_column' => 0,
+		'show_in_rest' => false,
+		'rest_base' => '',
+		'show_in_quick_edit' => true,
+        'hierarchical'    => true,
+	);
+	register_taxonomy( 'services', array( 'work' ), $args );
 
-/**
- * Search form for locations
- */
-add_shortcode( 'park_search', 'park_search_func' );
-function park_search_func($atts) {
-    $atts = shortcode_atts(
-        array(
-            'text-align' => 'left',
-            
-        ), $atts );
-    $form = '<form action="" id="findapark" class="ui-widget">
-        <input type="text" id="parklocation" style="text-align:'.$atts['text-align'].'" name="parklocation" autocomplete="false" placeholder="Enter your state or county" />
-    </form>';
-    return $form;
 }
+add_action( 'init', 'register_zone_cpts_and_taxonomies' );
 ?>

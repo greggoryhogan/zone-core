@@ -1,3 +1,3 @@
-# Leashless
+# Zone Core
 
-All the fancy stuff required to run [theleashlessdog.com](https://theleashlessdog.com/)
+Essentials for Zone to run separated from the theme, such as custom post types and taxonomies
