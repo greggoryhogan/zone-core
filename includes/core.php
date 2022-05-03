@@ -40,6 +40,36 @@ function register_zone_cpts_and_taxonomies() {
 	register_post_type( 'work', $args );
 
 	/**
+	 * Taxonomy: Work Category
+	 */
+
+	$labels = array(
+		'name' => __( 'Categories', 'zone' ),
+		'singular_name' => __( 'Category', 'zone' ),
+        'add_new_item' => __( 'Add New Category', 'zone' ),
+        'parent_item' => __( 'Parent Category', 'zone' ),
+        'not_found' => __( 'No Categories found', 'zone' ),
+	);
+
+	$args = array(
+		'label' => __( 'Categories', 'zone' ),
+		'labels' => $labels,
+		'public' => true,
+		'label' => 'Categories',
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'show_in_nav_menus' => true,
+		'query_var' => true,
+		'rewrite' => array( 'slug' => 'work-category', 'with_front' => false, ),
+		'show_admin_column' => 0,
+		'show_in_rest' => false,
+		'rest_base' => '',
+		'show_in_quick_edit' => true,
+        'hierarchical'    => true,
+	);
+	register_taxonomy( 'work-category', array( 'work' ), $args );
+
+	/**
 	 * Taxonomy: Industries
 	 */
 
@@ -98,6 +128,74 @@ function register_zone_cpts_and_taxonomies() {
         'hierarchical'    => true,
 	);
 	register_taxonomy( 'services', array( 'work' ), $args );
+
+
+	/**
+	 * Taxonomy: Page Category
+	 */
+
+	$labels = array(
+		'name' => __( 'Categories', 'zone' ),
+		'singular_name' => __( 'Category', 'zone' ),
+        'add_new_item' => __( 'Add New Category', 'zone' ),
+        'parent_item' => __( 'Parent Category', 'zone' ),
+        'not_found' => __( 'No Categories found', 'zone' ),
+	);
+
+	$args = array(
+		'label' => __( 'Categories', 'zone' ),
+		'labels' => $labels,
+		'public' => true,
+		'label' => 'Categories',
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'show_in_nav_menus' => true,
+		'query_var' => true,
+		'rewrite' => array( 'slug' => 'page-category', 'with_front' => false, ),
+		'show_admin_column' => 0,
+		'show_in_rest' => false,
+		'rest_base' => '',
+		'show_in_quick_edit' => true,
+        'hierarchical'    => true,
+	);
+	register_taxonomy( 'page-category', array( 'page' ), $args );
+
+	/**
+	 * Insert Featured Category for Posts, Pages and Work
+	 */
+	$featured_post = term_exists( 'Featured', 'category' );
+    if($featured_post == null) {
+		wp_insert_term(
+			'Featured',   // the term 
+			'category', // the taxonomy
+			array(
+				'slug'        => 'featured',
+				'parent'      => 0
+			)
+		);
+	}
+	$featured_page = term_exists( 'Featured', 'page-category' );
+    if($featured_page == null) {
+		wp_insert_term(
+			'Featured',   // the term 
+			'page-category', // the taxonomy
+			array(
+				'slug'        => 'featured',
+				'parent'      => 0
+			)
+		);
+	}
+	$featured_work = term_exists( 'Featured', 'work-category' );
+    if($featured_work == null) {
+		wp_insert_term(
+			'Featured',   // the term 
+			'work-category', // the taxonomy
+			array(
+				'slug'        => 'featured',
+				'parent'      => 0
+			)
+		);
+	}
 
 }
 add_action( 'init', 'register_zone_cpts_and_taxonomies' );
